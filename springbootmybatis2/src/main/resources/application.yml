@@ -1,0 +1,15 @@
+server:
+  port: 9999
+
+spring:
+  application:
+    name: rest-post-app-service
+
+  devtools:
+    restart:
+      enabled: true
+
+  cloud:
+    kubernetes:
+      discovery:
+        all-namespaces: true
