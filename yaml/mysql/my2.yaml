@@ -48,13 +48,13 @@ spec:
                 secretKeyRef:
                   name: mysql-password
                   key: password
-            - name: MYSQL_DATABASE # 구성할 database명
+            - name: MYSQL_DATABASE
               value: k8sdb
-            - name: MYSQL_USER # database에 권한이 있는 user
+            - name: MYSQL_USER
               value: k8suser
-            - name: MYSQL_ROOT_HOST # 접근 호스트
+            - name: MYSQL_ROOT_HOST
               value: '%'
-            - name: MYSQL_PASSWORD # database에 권한이 있는 user의 패스워드
+            - name: MYSQL_PASSWORD
               value: k8suser
           ports:
             - containerPort: 3306
