@@ -1,0 +1,86 @@
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: pv0001
+  labels:
+    type: local
+spec:
+  capacity:
+    storage: 2Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/data001/pv0001"
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: mysql-volumeclaim
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+kubectl create secret generic mysql-password --from-literal=password=mysql
+
+kubectl describe secret mysql-password
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql
+  labels:
+    app: mysqldb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysqldb
+  template:
+    metadata:
+      labels:
+        app: mysqldb
+    spec:
+      containers:
+        - image: mysql:5.6
+          name: mysql
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-password
+                  key: password
+            - name: MYSQL_DATABASE # 구성할 database명
+              value: k8sdb
+            - name: MYSQL_USER # database에 권한이 있는 user
+              value: k8suser
+            - name: MYSQL_ROOT_HOST # 접근 호스트
+              value: '%'
+            - name: MYSQL_PASSWORD # database에 권한이 있는 user의 패스워드
+              value: k8suser
+          ports:
+            - containerPort: 3306
+              name: mysql
+          volumeMounts:
+            - name: mysql-persistent-storage
+              mountPath: /var/lib/mysql
+      volumes:
+        - name: mysql-persistent-storage
+          persistentVolumeClaim:
+            claimName: mysql-volumeclaim
+---
+apiVersion: v1
+
+kind: Service
+metadata:
+  name: mysql
+  labels:
+    app: mysqldb-svc
+spec:
+  type: ClusterIP
+  ports:
+    - port: 3306
+  selector:
+    app: mysqldb
