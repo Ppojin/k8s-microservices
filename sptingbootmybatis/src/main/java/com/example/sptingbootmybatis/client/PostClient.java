@@ -12,7 +12,7 @@ import java.util.List;
 @FeignClient(url="http://rest-post-app-service:8082", name="rest-post-app-service")
 public interface PostClient {
 
-    @GetMapping("/users/{id}/posts")
+    @GetMapping("/posts/{id}")
     List<Post> getPosts(@PathVariable String id);
 
 }

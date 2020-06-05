@@ -14,7 +14,7 @@ public class PostController {
     @Autowired
     PostService service;
 
-    @GetMapping(value = "/users/{id}/posts")
+    @GetMapping(value = "/posts/{id}")
     public List<Post> getUser(@PathVariable String id) {
         List<Post> posts = service.getPostsByUserId(id);
 
