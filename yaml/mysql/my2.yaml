@@ -23,10 +23,6 @@ spec:
     requests:
       storage: 1Gi
 ---
-kubectl create secret generic mysql-password --from-literal=password=mysql
-
-kubectl describe secret mysql-password
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
